@@ -1,16 +1,17 @@
 import { View, Text,Image,StyleSheet, Button, TouchableOpacity } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Colors from '../Shared/Colors'
 import { Ionicons } from '@expo/vector-icons';
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
+import { AuthContext } from '../Context/AuthContext';
 
 
 export default function Login() {
   WebBrowser.maybeCompleteAuthSession();
   const[accessToken,setAccessToken]=useState();
   const[userInfo,setUserInfo]=useState();
-
+  const {userData,setUserData}=useContext(AuthContext)
   const [request, response, promptAsync] = Google.useAuthRequest({
     androidClientId: '55959786226-e9frfu2d60hu3lt653blch82e4rhjsnp.apps.googleusercontent.com',
     expoClientId:'288087915980-ent8ogj40a6k1vih6gcbnbbr1vccl3o9.apps.googleusercontent.com'
@@ -19,9 +20,10 @@ export default function Login() {
   useEffect(()=>{
     if(response?.type=='success'){
       setAccessToken(response.authentication.accessToken);
-      console.log(response.authentication.accessToken)
+      
+      getUserData();
     }
-  },[response])
+  },[response]);
 
   const getUserData=async()=>{
     try {
@@ -31,17 +33,20 @@ export default function Login() {
           headers: { Authorization: `Bearer ${response.authentication.accessToken}` },
         }
       );
+  
 
       const user = await resp.json();
       console.log("user Details",user) 
       setUserInfo(user); 
-      setUserData(user);
+      setUserData(user)
+      // setUserData(user);
       await Services.setUserAuth(user);
     } catch (error) {
       // Add your own error handler here
     }
 
   }
+
 
   return (
     <View>
