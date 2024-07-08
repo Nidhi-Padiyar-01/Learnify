@@ -1,4 +1,18 @@
 {
-  "name": "login-ui",
-  "slug": "login-ui"
+  "expo": {
+    "name": "login-ui",
+    "slug": "learnify",
+    "scheme":"learnify",
+    "eas": {
+      "projectId": "87d22356-350a-4dc7-970f-6b1976920b8b"
+    },
+    "android": {
+      "package": "com.project.learnify"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "87d22356-350a-4dc7-970f-6b1976920b8b"
+      }
+    }
+  }
 }
