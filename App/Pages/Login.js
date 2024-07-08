@@ -9,6 +9,8 @@ import * as Google from 'expo-auth-session/providers/google';
 export default function Login() {
   WebBrowser.maybeCompleteAuthSession();
   const[accessToken,setAccessToken]=useState();
+  const[userInfo,setUserInfo]=useState();
+
   const [request, response, promptAsync] = Google.useAuthRequest({
     androidClientId: '55959786226-e9frfu2d60hu3lt653blch82e4rhjsnp.apps.googleusercontent.com',
     expoClientId:'288087915980-ent8ogj40a6k1vih6gcbnbbr1vccl3o9.apps.googleusercontent.com'
@@ -17,9 +19,29 @@ export default function Login() {
   useEffect(()=>{
     if(response?.type=='success'){
       setAccessToken(response.authentication.accessToken);
-      console.log(accessToken)
+      console.log(response.authentication.accessToken)
     }
   },[response])
+
+  const getUserData=async()=>{
+    try {
+      const resp = await fetch(
+        "https://www.googleapis.com/userinfo/v2/me",
+        {
+          headers: { Authorization: `Bearer ${response.authentication.accessToken}` },
+        }
+      );
+
+      const user = await resp.json();
+      console.log("user Details",user) 
+      setUserInfo(user); 
+      setUserData(user);
+      await Services.setUserAuth(user);
+    } catch (error) {
+      // Add your own error handler here
+    }
+
+  }
 
   return (
     <View>
